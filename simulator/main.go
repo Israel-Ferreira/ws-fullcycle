@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/Israel-Ferreira/imersao-fullcycle/simulator/application/kafka"
@@ -24,6 +25,7 @@ func main() {
 	go consumer.Consume()
 
 	for msg := range msgChan {
-		kafka.ProduceMsg(msg)
+		go kafka.ProduceMsg(msg)
+		fmt.Println(string(msg.Value))
 	}
 }

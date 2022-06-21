@@ -39,6 +39,5 @@ func Publish(msg string, topic string, producer *ckafka.Producer) error {
 	}
 
 	
-
 	return nil
 }

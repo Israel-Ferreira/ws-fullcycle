@@ -21,11 +21,6 @@ func ProduceMsg(msg *ckafka.Message) {
 
 	route.LoadPositions()
 
-	if err := route.LoadPositions(); err != nil {
-		log.Println(err.Error())
-		return
-	}
-
 	positions, err := route.ExportJsonPositions()
 
 	if err != nil {
@@ -34,9 +29,7 @@ func ProduceMsg(msg *ckafka.Message) {
 	}
 
 	for _, pos := range positions {
-		if err := kafka.Publish(pos, os.Getenv("KAFKA_PRODUCE_TOPIC"), producer); err != nil {
-			log.Println("erro ao enviar a mensagem: " + err.Error())
-			time.Sleep(time.Millisecond * 500)
-		}
+		kafka.Publish(pos, os.Getenv("KAFKA_PRODUCE_TOPIC"), producer)
+		time.Sleep(time.Millisecond * 500)
 	}
 }
