@@ -1,11 +1,15 @@
 import Mapping from "./components/Mapping";
 
+import {CssBaseline, ThemeProvider} from "@mui/material"
+import theme from "./theme";
+
 
 function App() {
   return (
-    <div className="App">
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Mapping />
-    </div>
+    </ThemeProvider>
   );
 }
 

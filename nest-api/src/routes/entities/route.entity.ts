@@ -9,6 +9,9 @@ export type RouteDocument = Route & Document
 export class Route {
 
     @Prop()
+    _id: string;
+
+    @Prop()
     title: string;
 
     @Prop(
