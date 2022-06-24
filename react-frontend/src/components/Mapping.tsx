@@ -6,6 +6,7 @@ import { Loader } from 'google-maps';
 import { getCurrentPosition } from '../utils/geolocation';
 import { makeCarIcon, makeMarkerIcon } from '../utils/map';
 import { sample, shuffle } from 'lodash';
+import { Map } from '../utils/MapRoute';
 
 
 const API_URL = process.env.REACT_APP_API_URL
@@ -26,13 +27,13 @@ const colors = [
 
 
 
-function Mapping() {
+const Mapping : React.FC = () => {
     const [routes, setRoutes] = useState<Route[]>([])
     const [routeIdSelected, setRouteIdSelected] = useState<string>('')
 
     const googleMapsLoader = new Loader(process.env.REACT_APP_GOOGLE_API_KEY)
 
-    const mapRef = useRef<google.maps.Map>();
+    const mapRef = useRef<Map>();
 
     useEffect(() => {
         fetch(`${API_URL}/routes`)
@@ -48,10 +49,12 @@ function Mapping() {
                 getCurrentPosition({ enableHighAccuracy: true })
             ])
 
+            console.log(position)
+
             const divMap = document.getElementById("map") as HTMLElement
-            mapRef.current = new google.maps.Map(divMap, {
+            mapRef.current = new Map(divMap, {
                 zoom: 15,
-                center: position
+                center: await position
             })
 
         })()
@@ -66,19 +69,18 @@ function Mapping() {
         
 
         const route = routes.find(route => route._id === routeIdSelected)
-        new google.maps.Marker({
-            position: route?.startPosition,
-            map: mapRef.current,
-            icon: makeCarIcon(color)
-        })
 
+        mapRef.current?.addRoute(routeIdSelected, {
+            currentMarkerOptions: {
+                position: route?.startPosition,
+                icon: makeCarIcon(color)
+            },
 
-        new google.maps.Marker({
-            position: route?.endPosition,
-            map: mapRef.current,
-            icon: makeMarkerIcon(color)
-        })
-
+            endMarkerOptions: {
+                position: route?.endPosition,
+                icon: makeMarkerIcon(color)
+            }
+        });
 
     }, [routeIdSelected, routes])
 
